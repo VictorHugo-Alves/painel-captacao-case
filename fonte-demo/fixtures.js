@@ -3,13 +3,13 @@
 //
 // Nada aqui vem de export, recorte ou anonimização de base real. Tudo é
 // GERADO a partir de distribuições escritas neste arquivo, com um PRNG de
-// semente fixa. A diferença importa: anonimizar é uma peneira — sempre
+// semente fixa. A diferença importa: anonimizar é uma peneira, sempre
 // escapa um e-mail num campo livre, um telefone dentro de uma observação.
 // Gerando do zero não existe origem, então não há o que escapar.
 //
 // A série diária é a fonte única: páginas, criativos, campanhas, grupo,
 // pesquisa e mensageria são todos derivados dela. Por isso os números
-// fecham entre as abas — o total de leads da aba Páginas bate com o dos
+// fecham entre as abas: o total de leads da aba Páginas bate com o dos
 // Indicadores porque é o mesmo número, dividido de outro jeito.
 // =====================================================================
 import {
@@ -83,7 +83,7 @@ export const serie = umaVez(() => {
     const distrib = i >= 12 ? captacao * entre(r, 0.02, 0.05) : 0
     const disparos = i >= 8 ? entre(r, 90, 340) : 0
 
-    // funil do Meta. O CPL sai de cpm ÷ (1000·ctr·connect·conv) — os quatro
+    // funil do Meta. O CPL sai de cpm ÷ (1000·ctr·connect·conv). Os quatro
     // são sorteados, então o CPL do dia é consequência, não um número solto.
     const cpm = entre(r, 39, 48)
     const ctr = entre(r, 0.0108, 0.0143)
@@ -99,7 +99,7 @@ export const serie = umaVez(() => {
     const clicksGg = Math.round(capGg / entre(r, 2.4, 3.4))
     const leadsGg = Math.round(capGg / entre(r, 9.5, 13))
 
-    // `leads` = gerenciador, que só enxerga o Meta — é o que a ingestão traz.
+    // `leads` = gerenciador, que só enxerga o Meta, que é o que a ingestão traz.
     // O Active soma Google e orgânico, então fica bem acima. Essa diferença é
     // real e aparece no painel como CPL (gerenciador) ≠ CPL (Active).
     const leadsActive = Math.round((leadsFb + leadsGg) * entre(r, 1.03, 1.09))
@@ -150,7 +150,7 @@ function recorte(from, to) {
 
 // ------------------------------------------------------------- pessoas
 // Pools para montar nomes por combinação. Nenhum corresponde a pessoa
-// real — são nomes comuns recombinados aleatoriamente.
+// real: são nomes comuns recombinados aleatoriamente.
 const NOMES = ['Ana', 'Bruno', 'Carla', 'Daniel', 'Eduarda', 'Felipe', 'Gabriela', 'Henrique', 'Isadora', 'Joana', 'Karina', 'Lucas', 'Mariana', 'Nelson', 'Olívia', 'Paulo', 'Queila', 'Rafael', 'Sabrina', 'Thiago', 'Úrsula', 'Vinícius', 'Wagner', 'Yara', 'Zeca', 'Beatriz', 'Caio', 'Débora', 'Elias', 'Fernanda']
 const SOBRENOMES = ['Almeida', 'Barbosa', 'Cardoso', 'Duarte', 'Esteves', 'Freitas', 'Gonçalves', 'Henriques', 'Ipanema', 'Jardim', 'Klein', 'Lemos', 'Marinho', 'Nogueira', 'Oliveira', 'Pacheco', 'Quintana', 'Ramos', 'Siqueira', 'Tavares', 'Ubaldo', 'Vieira', 'Wanderley', 'Xavier', 'Zanetti', 'Correia', 'Dantas', 'Machado', 'Prado', 'Rezende']
 const DOMINIOS = ['exemplo.com', 'correio.exemplo', 'mail.exemplo.br', 'demo.exemplo']

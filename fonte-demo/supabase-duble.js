@@ -2,7 +2,7 @@
 // DUBLÊ do cliente Supabase, usado SOMENTE no build de demonstração.
 //
 // O arquivo de produção cria um cliente real e carrega a URL do projeto e
-// a chave anônima. Nenhuma das duas pode entrar num bundle público — mesmo
+// a chave anônima. Nenhuma das duas pode entrar num bundle público. Mesmo
 // a anon key sendo protegida por RLS, publicar a URL do banco é convite
 // para alguém testar as políticas.
 //

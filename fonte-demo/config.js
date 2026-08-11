@@ -31,7 +31,7 @@ export const FIM_CAPTACAO = somaDias(HOJE, 14)
 export const EVENTO = somaDias(HOJE, 13)
 export const FIM_TESTES = somaDias(HOJE, -20) // os 5 primeiros dias são teste
 
-/** Todos os dias COM dado — do início da captação até hoje. */
+/** Todos os dias COM dado: do início da captação até hoje. */
 export function diasComDado() {
   const out = []
   for (let i = 0; i <= diffDias(INICIO, HOJE); i++) out.push(somaDias(INICIO, i))
@@ -41,8 +41,8 @@ export function diasComDado() {
 // --------------------------------------------------------------------
 // Metas fictícias. Escolhidas para o painel contar uma história legível:
 // o lançamento está levemente ATRÁS do ritmo em leads e investimento, o
-// CPL passou pouco do alvo, e as páginas divergem bastante entre si — que
-// é o cenário em que a escala de cores da tabela de páginas serve pra algo.
+// CPL passou pouco do alvo, e as páginas divergem bastante entre si,
+// que é o cenário em que a escala de cores da tabela de páginas serve pra algo.
 // --------------------------------------------------------------------
 export const METAS = {
   leads: 24000,

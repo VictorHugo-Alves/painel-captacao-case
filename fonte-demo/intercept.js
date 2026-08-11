@@ -7,7 +7,7 @@
 // então o que a demo mostra É o produto, não uma reprodução parecida.
 //
 // Os parâmetros da URL (from, to, utm) são repassados aos geradores, então
-// os filtros da barra superior funcionam de verdade — recortam a série e
+// os filtros da barra superior funcionam de verdade: recortam a série e
 // tudo que deriva dela, exatamente como o back-end faria.
 // =====================================================================
 import { resolver, respostaPadrao } from './fixtures.js'
