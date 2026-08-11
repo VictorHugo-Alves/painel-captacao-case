@@ -81,7 +81,6 @@ export const serie = umaVez(() => {
     const aqcFb = i >= 14 ? captacao * entre(r, 0.06, 0.11) : 0
     const lembretes = diffDias(date, EVENTO) <= 6 ? captacao * entre(r, 0.04, 0.08) : 0
     const distrib = i >= 12 ? captacao * entre(r, 0.02, 0.05) : 0
-    const disparos = i >= 8 ? entre(r, 90, 340) : 0
 
     // funil do Meta. O CPL sai de cpm ÷ (1000·ctr·connect·conv). Os quatro
     // são sorteados, então o CPL do dia é consequência, não um número solto.
@@ -106,6 +105,27 @@ export const serie = umaVez(() => {
     const activeFb = Math.round(leadsActive * entre(r, 0.75, 0.8))
     const activeGg = Math.round(leadsActive * entre(r, 0.12, 0.17))
 
+    // Mensageria de ONBOARDING: dispara uma vez por lead novo, nos três canais.
+    // Por isso o enviado de cada canal é o volume de leads do dia, e não um
+    // número solto: quem entra recebe o template, o e-mail e a ligação.
+    const apiEnv = leadsActive
+    const apiEntg = Math.round(apiEnv * entre(r, 0.93, 0.97))
+    const apiLido = Math.round(apiEntg * entre(r, 0.62, 0.78))
+    const apiClq = Math.round(apiLido * entre(r, 0.3, 0.44))
+    const emEnv = leadsActive
+    const emEntg = Math.round(emEnv * entre(r, 0.93, 0.97))
+    const emAb = Math.round(emEntg * entre(r, 0.33, 0.44))
+    const emClq = Math.round(emAb * entre(r, 0.18, 0.28))
+    const ligCh = leadsActive
+    const ligAt = Math.round(ligCh * entre(r, 0.44, 0.58))
+    const ligAc = Math.round(ligAt * entre(r, 0.28, 0.4))
+
+    // custo por canal. Só o template de utilidade do WhatsApp é tarifado; as
+    // mensagens seguintes caem na janela de 24h aberta pelo clique.
+    const custoApi = apiEntg * 0.0432
+    const custoEmail = emEnv * 0.0009
+    const custoLig = ligCh * 0.118
+
     return {
       date,
       investTrafego: arred(captacao + rmkFb + aqcFb),
@@ -114,7 +134,10 @@ export const serie = umaVez(() => {
       investAquecimento: arred(aqcFb),
       investLembretes: arred(lembretes),
       investDistribuicao: arred(distrib),
-      investDisparos: arred(disparos),
+      investDisparos: arred(custoApi + custoEmail + custoLig),
+      investDisparosApi: arred(custoApi),
+      investDisparosEmail: arred(custoEmail),
+      investDisparosLiguelead: arred(custoLig),
       investFacebook: arred(capFb + rmkFb + aqcFb),
       investGoogle: arred(capGg),
       investTrafegoFb: arred(capFb + rmkFb + aqcFb),
@@ -127,6 +150,8 @@ export const serie = umaVez(() => {
       investAquecimentoGg: 0,
       // funil
       impressoes,
+      impressoesFb: impressoes,          // a série de impressões é toda do Meta
+      impressoesGg: Math.round(clicksGg / entre(r, 0.02, 0.07)),
       alcance: Math.round(impressoes / entre(r, 1.6, 2.5)),
       clicks: clicksFb + clicksGg,
       clicksFb,
@@ -137,8 +162,13 @@ export const serie = umaVez(() => {
       leadsActive,
       activeFb,
       activeGg,
+      leadsActiveTrafego: activeFb,
       grupo: Math.round(leadsActive * entre(r, 0.66, 0.76)),
       pesquisas: Math.round(leadsActive * entre(r, 0.40, 0.49)),
+      // mensageria de onboarding (API WhatsApp · e-mail · ligação)
+      apiEnv, apiEntg, apiLido, apiClq,
+      emEnv, emEntg, emAb, emClq,
+      ligCh, ligAt, ligAc,
     }
   })
 })
