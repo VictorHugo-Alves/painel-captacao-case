@@ -1,31 +1,52 @@
-# Painel de captação · estudo de caso
+# Painel de captação de lançamento · demonstração
 
-Reprodução de um painel de acompanhamento de lançamento digital, com **dados
-inteiramente fictícios**. O objetivo não é mostrar código de dashboard: é mostrar
-como uma decisão de leitura de dado muda o que a pessoa faz com a verba.
+Este é o **front de produção de um painel de acompanhamento de lançamento digital**,
+publicado rodando com **dados inteiramente fictícios**. Não é um protótipo nem uma
+recriação: é o mesmo Vue compilado, com os mesmos componentes, tabelas, modais e
+gráficos. O que muda é de onde vêm os números.
 
-**[▶ Ver a demonstração ao vivo](https://victorhugo-alves.github.io/painel-captacao-case/)**
+**[▶ Abrir a demonstração](https://victorhugo-alves.github.io/painel-captacao-case/demo/)**
+
+> **Tudo aqui é fictício.** Nenhum número, nome, campanha, página, meta ou pessoa
+> corresponde a algo real. A marca "Curso Nacional" e o símbolo foram criados para
+> esta demonstração e não representam nenhuma organização existente.
 
 ---
 
-## O problema
+## O que dá para ver
 
-A versão anterior do painel pintava cada métrica de **verde** quando batia a meta e
-de **vermelho** quando não batia.
+O painel acompanha uma captação de leads de 40 dias, e a demo abre sempre no meio
+dela — com 26 dias corridos e 14 pela frente.
 
-Parece razoável, até você colocar duas páginas lado a lado. Uma convertendo **34,2%**
-e outra **19,3%**, ambas contra uma meta de 40%, saíam **idênticas** na tela.
+- **Indicadores** — investimento, funil de mídia (CPM, CTR, connect rate, conversão
+  da página), leads, CPL e %MQL, dia a dia e acumulado, cada métrica contra a meta.
+- **Ritmo e projeção** — quanto falta captar e investir por dia para bater a meta,
+  com régua de *catch-up* (recalcula o necessário diário a cada dia) e projeção de
+  fechamento a partir da média dos últimos dias fechados.
+- **Páginas** — desempenho por página de captura, com escala de cor por distância
+  da meta (mais sobre isso abaixo).
+- **Criativos** — gasto, CTR, retenção de vídeo, leads e MQL por anúncio, com o
+  status do gerenciador.
+- **Grupo, pesquisa, caderno, mensageria e equipe** — as demais etapas do funil.
+
+Os filtros de data no topo funcionam de verdade: recortam a série e tudo que deriva
+dela, aba por aba.
+
+## A decisão de leitura que o painel carrega
+
+A versão anterior pintava cada métrica de **verde** quando batia a meta e de
+**vermelho** quando não batia.
+
+Parece razoável, até colocar duas páginas lado a lado. Uma convertendo **34%** e
+outra **19%**, ambas contra uma meta de 40%, saíam **idênticas** na tela.
 
 Não são a mesma situação. A primeira está a seis pontos do alvo e provavelmente se
 resolve com ajuste de público. A segunda está a menos da metade, e aí o problema é
-outro: oferta, promessa, ou público completamente errado.
+outro: oferta, promessa, ou público completamente errado. Quem opera o painel
+durante o lançamento precisa saber **o que atacar primeiro**, e duas cores não
+priorizam nada.
 
-Quem opera o painel durante o lançamento precisa saber **o que atacar primeiro**.
-Duas cores não priorizam nada.
-
-## A decisão
-
-Trocar o binário por **cinco faixas**, calculadas pela razão entre o valor e a meta:
+A troca foi por **cinco faixas**, calculadas pela razão entre o valor e a meta:
 
 | Faixa | Situação |
 | --- | --- |
@@ -55,34 +76,27 @@ Duas escolhas de acessibilidade acompanham: as pontas da escala ganham peso maio
 fonte, e cada célula colorida tem `title` dizendo em texto a distância da meta — cor
 sozinha não comunica para quem não a enxerga.
 
-## O que a tabela passou a mostrar
+## Como a demo roda sem back-end
 
-- **A página barata que sai cara.** `tr8` tem o segundo melhor CPL do estudo
-  (R$ 17,34) e passaria por saudável em qualquer relatório de custo. Mas **53% dos
-  leads dela estão fora do perfil**. Compra barato o público errado, e escalá-la
-  derruba a qualidade do funil inteiro.
-- **A variante que merecia verba.** `nv1-b` tem o melhor CPL, a melhor conversão e o
-  melhor MQL, com apenas 5% do investimento.
-- **A que precisa parar hoje.** `hq2` é vermelho em tudo: CPL de R$ 52,58, três vezes
-  a meta, e 23% de MQL.
+O painel de produção fala com uma API Fastify sobre Postgres. Aqui não existe
+servidor, e mesmo assim nenhum componente foi alterado. São três peças, todas em
+[`fonte-demo/`](fonte-demo/):
 
-Nenhuma dessas conclusões exige análise adicional. Elas ficam visíveis na própria
-tabela, que é o ponto: o painel é **operado** por quem decide verba durante o
-lançamento, não lido com calma depois.
+**[`intercept.js`](fonte-demo/intercept.js)** substitui `window.fetch` e responde as
+chamadas `/api/*`. Como todas as camadas de dados do front passam pelo mesmo `fetch`,
+elas ficaram intactas — inclusive os parâmetros `from`, `to` e `utm`, que são
+repassados aos geradores. É por isso que os filtros de data funcionam.
 
-## Os dados
+**[`fixtures.js`](fonte-demo/fixtures.js)** gera os dados das 35 rotas. Uma série
+diária é a fonte única: investimento, impressões, cliques, page views e leads saem de
+distribuições escritas no arquivo, e páginas, criativos, campanhas, grupo, pesquisa e
+mensageria são derivados dela. Por isso os números **fecham entre as abas** — o total
+de leads da aba Páginas bate com o dos Indicadores porque é o mesmo número, dividido
+de outro jeito.
 
-Todo número vem de [`gerar_dados.py`](gerar_dados.py), que sorteia valores a partir de
-distribuições escritas no próprio arquivo: uma curva de investimento que sobe ao longo
-da captação e cai no fim de semana, e um "temperamento" por página, com taxa de
-conversão e proporção de público-alvo próprias.
-
-```bash
-python3 gerar_dados.py > dados.json
-```
-
-A semente é fixa, então a demonstração é sempre idêntica e o texto acima corresponde
-exatamente ao que a tabela mostra.
+**[`supabase-duble.js`](fonte-demo/supabase-duble.js)** é um dublê do cliente de
+autenticação, com a mesma superfície de exports. Foi a peça necessária para que a URL
+do banco e a chave anônima não entrassem no bundle publicado.
 
 ### Por que gerar em vez de anonimizar
 
@@ -90,12 +104,16 @@ Anonimizar um recorte real é uma peneira: sempre escapa um e-mail num campo de 
 livre, um telefone no meio de uma observação, um documento que ficou fora da regra.
 Gerando do zero **não existe origem** — não há registro real por trás de nenhuma linha.
 
-> **Dados fictícios.** Nenhum valor deste repositório corresponde a campanha, empresa,
-> produto ou pessoa real. A marca "Curso Nacional" e o símbolo foram criados para esta
-> demonstração e não representam nenhuma organização existente.
+O mesmo raciocínio vale para as **metas**, que também são inventadas
+([`config.js`](fonte-demo/config.js)). Alvo de operação é informação de negócio, e
+não há motivo para publicá-lo só porque o painel o exibe.
+
+Uma escolha de calibragem: os números foram ajustados para o lançamento fictício
+ficar **levemente atrás do ritmo**, com o CPL do gerenciador acima da meta e o do
+Active abaixo. Um painel onde está tudo verde não mostra para que ele serve.
 
 ## Stack
 
-A versão de produção deste painel roda em **Vue 3 + Fastify + Postgres**, com ingestão
-automática de várias fontes de mídia e mensageria. Esta demonstração é uma reprodução
-estática da mesma interface, sem back-end, para poder ser publicada e navegada.
+Vue 3 + Vite no front; em produção, Fastify + Postgres por trás, com ingestão
+automática de várias fontes de mídia e mensageria. A demo publicada é o mesmo build
+do front, servido estaticamente pelo GitHub Pages.
