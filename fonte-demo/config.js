@@ -24,12 +24,15 @@ const somaDias = (iso, n) => {
 }
 export const diffDias = (a, b) => Math.round((dia(b) - dia(a)) / 86400000)
 
-// 40 dias de captação: 25 já rodados (hoje é o 26º) e 14 pela frente.
+// 40 dias de captação: 27 já rodados (hoje é o 28º) e 12 pela frente.
 export const HOJE_ISO = HOJE
-export const INICIO = somaDias(HOJE, -25)
-export const FIM_CAPTACAO = somaDias(HOJE, 14)
-export const EVENTO = somaDias(HOJE, 13)
-export const FIM_TESTES = somaDias(HOJE, -20) // os 5 primeiros dias são teste
+export const INICIO = somaDias(HOJE, -27)
+export const FIM_CAPTACAO = somaDias(HOJE, 12)
+export const EVENTO = somaDias(HOJE, 11)
+export const FIM_TESTES = somaDias(HOJE, -22) // os 5 primeiros dias são teste
+
+/** dd/mm, para os rótulos da linha do tempo. */
+export const ddmm = (iso) => iso.slice(8, 10) + '/' + iso.slice(5, 7)
 
 /** Todos os dias COM dado: do início da captação até hoje. */
 export function diasComDado() {
