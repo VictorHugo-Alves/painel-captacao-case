@@ -4,7 +4,7 @@ Reprodução de um painel de acompanhamento de lançamento digital, com **dados
 inteiramente fictícios**. O objetivo não é mostrar código de dashboard: é mostrar
 como uma decisão de leitura de dado muda o que a pessoa faz com a verba.
 
-**[▶ Ver a demonstração](#)** *(link do GitHub Pages depois de publicar)*
+**[▶ Ver a demonstração ao vivo](https://victorhugo-alves.github.io/painel-captacao-case/)**
 
 ---
 
